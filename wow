@@ -123,7 +123,7 @@ auth_start() {
 	echo "Authserver is running.                 \033[0;32m[  OK  ]"
 }
 auth_stop() {
-	as_user "screen -p 0 -S $AUTHSCREEN -X eval 'stuff \"^C\"\015'""
+	as_user "screen -p 0 -S $AUTHSCREEN -X eval 'stuff \"^C\"\015'"
 	sleep 0.5
 	#
 	# Waiting for the server to shut down
@@ -147,7 +147,7 @@ auth_stop() {
 	echo "Authserver is now shut down.   \033[0;32m[  OK  ]"
 }
 world_stop() {
-	as_user "screen -p 0 -S $WORLDSCREEN -X eval 'stuff \"^C\"\015'""
+	as_user "screen -p 0 -S $WORLDSCREEN -X eval 'stuff \"^C\"\015'"
 	sleep 0.5
 	#
 	# Waiting for the server to shut down
@@ -226,7 +226,7 @@ case "$1" in
 	stop)
 		# Stops the server
 		if is_running_auth; then
-			as_user "screen -p 0 -S $WORLDSCREEN -X eval 'stuff \"announce SERVER IS GOING TO SHUT DOWN\"\015'""
+			as_user "screen -p 0 -S $WORLDSCREEN -X eval 'stuff \"announce SERVER IS GOING TO SHUT DOWN\"\015'"
 			auth_stop
 		else
 			echo "Auth server is not running.              \033[0;31m[ FAIL ]"
