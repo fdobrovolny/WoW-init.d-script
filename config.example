@@ -1,11 +1,20 @@
 #!/bin/bash
-#
-# Settings file for WoW-init.d-script
-# ================================
-# 
-# Make a copy of this file named config
-# and edit the variables to your needs.
-#
+##############################################
+# Settings file for WoW-init.d-script        #
+# ================================           #
+##############################################
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!#
+#!! Make a copy of this file named config  !!#
+#!! and edit the variables to your needs.  !!#
+#!! In worldserver.conf set this vaules!!! !!#
+#!! LogTimestamp = 0                       !!#
+#!! GmLogPerAccount = 0                    !!#
+#!! GmLogTimestamp = 0                     !!#
+#!! ChatLogTimestamp = 0                   !!#
+#!! In authserver.conf set this vaules!!!  !!#
+#!! LogTimestamp = 0                       !!#
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!#
+##############################################
 
 # Name auth server
 AUTHSERVER="authserver"
@@ -27,23 +36,42 @@ WOWPATH="/home/${USERNAME}/bin"
 # Log roling
 # =====================
 
-# Status
-# "false" - (disabled)
-# "true"  - (enabled)
-LOGROLL="true"
-
 # Location for logs (folder).
-BACKUPPATH="/home/${USERNAME}/logs"
+LOGPATH="/home/${USERNAME}/logs"
 
 # Format for log roll (tar or zip).
 BACKUPFORMAT="tar"  
 
 # Location for old logs
 # Used by the log-roll command
-LOGPATH="/home/${USERNAME}/oldlogs"
+OLDLOGPATH="/home/${USERNAME}/oldlogs"
+
+#Enter names of Logfiles
+# =====================
+
+#AUTH
+AUTHLOGFILE = "Auth.log"
+AUTHSQLDRIVERLOGFILE = "auth_SQLDriver.log"
+
+#WORLD
+SERVERLOGFILE = "Server.log"
+WORLDLOGFILE = "World.log"
+DBERRORLOGFILE = "DBErrors.log"
+CHARLOGFILE = "Char.log"
+GMLOGFILE = "GM.log"
+RALOGFILE = "RA.log"
+ARENALOGFILE = "Arena.log"
+SQLDEVELOPERLOFFILE = "world_SQLDev.log"
+SQLDRIVERLOGFILE = "world_SQLDriver.log"
+CHATLOGFILE = "Chat.log"
+
 
 # Things to leave alone ;)
 # =====================
 
 AUTHINVOCATION="./${AUTHSERVER}"
 WORLDINVOCATION="./${WORLDSERVER}"
+# DO NOT EDIT THINGS UNDER THIS LINE!!!
+SALT=">8FoQEq EPzK[JI!rK]kA8Ls^4+:9a6=x^!v1y..?m?i 5{)ed##Do?}+-V0dY63"
+#By BrnoPCmaniak 
+# Updates: https://github.com/BrnoPCmaniak/WoW-init.d-script
