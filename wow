@@ -251,8 +251,8 @@ case "$1" in
 			echo "World server is not running.             \033[0;31m[ FAIL ]"
 		fi    
 		world_start
-    sleep 60
-    auth_start
+    		sleep 60
+    		auth_start
 		;;
 	announce)
 		# Says something to the ingame chat
@@ -283,8 +283,7 @@ case "$1" in
 		;;
 	version)
 		if is_running; then
-			mc_command version
-			tac $MCPATH/server.log | grep -m 1 "This server is running"
+			tac $LOGPATH/server.log | grep -m 1 "This server is running"
 		else
 			echo "The server needs to be running to check version."
 		fi
@@ -299,7 +298,7 @@ case "$1" in
 		echo -e "   log-roll \t\t Moves and gzips the logfile"
 		echo -e "   announce \t\t\t Prints the given string to the ingame chat."
 		echo -e "   status \t\t Displays server status"
-		echo -e "   version \t\t Displays Bukkit version and then exits"
+		echo -e "   version \t\t Displays Trinity Core version and then exits"
 		;;
 	*)
 		echo "Usage: wow {start|stop|restart|status|version|log-roll|announce|help}"
