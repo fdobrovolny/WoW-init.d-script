@@ -30,7 +30,7 @@ fi
 if [ "$SALT" == "" ]
 then
 	echo "Couldn't load config file, please edit config.example and rename it to config"
-	logger -t minecraft-init "Couldn't load config file, please edit config.example and rename it to config"
+	logger -t wow-init-config "Couldn't load config file, please edit config.example and rename it to config"
 	exit
 fi
 
@@ -139,7 +139,7 @@ auth_stop() {
 		fi
 		if [[ $seconds -ge 120 ]]
 		then
-			logger -t wow-init(auth) "Failed to shut down server, aborting."
+			logger -t wow-init-auth "Failed to shut down server, aborting."
 			echo "Authserver failed to start, aborting.     \033[0;31m[ FAIL ]"
 			exit 1
 		fi
@@ -163,7 +163,7 @@ world_stop() {
 		fi
 		if [[ $seconds -ge 120 ]]
 		then
-			logger -t wow-init(world) "Failed to shut down server, aborting."
+			logger -t wow-init-world "Failed to shut down server, aborting."
 			echo "Worldserver failed to start, aborting.    \033[0;31m[ FAIL ]"
 			exit 1
 		fi
