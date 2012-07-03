@@ -50,20 +50,20 @@ OLDLOGPATH="/home/${USERNAME}/oldlogs"
 # =====================
 
 #AUTH
-AUTHLOGFILE = "Auth.log"
-AUTHSQLDRIVERLOGFILE = "auth_SQLDriver.log"
+AUTHLOGFILE="Auth.log"
+AUTHSQLDRIVERLOGFILE="auth_SQLDriver.log"
 
 #WORLD
-SERVERLOGFILE = "Server.log"
-WORLDLOGFILE = "World.log"
-DBERRORLOGFILE = "DBErrors.log"
-CHARLOGFILE = "Char.log"
-GMLOGFILE = "GM.log"
-RALOGFILE = "RA.log"
-ARENALOGFILE = "Arena.log"
-SQLDEVELOPERLOFFILE = "world_SQLDev.log"
-SQLDRIVERLOGFILE = "world_SQLDriver.log"
-CHATLOGFILE = "Chat.log"
+SERVERLOGFILE="Server.log"
+WORLDLOGFILE="World.log"
+DBERRORLOGFILE="DBErrors.log"
+CHARLOGFILE="Char.log"
+GMLOGFILE="GM.log"
+RALOGFILE="RA.log"
+ARENALOGFILE="Arena.log"
+SQLDEVELOPERLOFFILE="world_SQLDev.log"
+SQLDRIVERLOGFILE="world_SQLDriver.log"
+CHATLOGFILE="Chat.log"
 
 
 # Things to leave alone ;)
