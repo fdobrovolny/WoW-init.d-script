@@ -1,82 +1,79 @@
 #!/bin/bash
 # /etc/init.d/wow
 
+# chconfig: 2345 70 70
+
 ### BEGIN INIT INFO
 # Provides:   wow
-# Required-Start: $local_fs $remote_fs
-# Required-Stop:  $local_fs $remote_fs
+# Required-Start: $local_fs $remote_fs $mysqld
+# Required-Stop:  $local_fs $remote_fs $mysqld
 # Should-Start:   $network
 # Should-Stop:    $network
 # Default-Start:  2 3 4 5
 # Default-Stop:   0 1 6
 # Short-Description:    World of Warcraft server
-# Description:    Init script for World of Warcraft server, with rolling logs. 
+# Description:    Init script for World of Warcraft server, with rolling logs.
 ### END INIT INFO
 
 # Created by Floriusin
 
 # Based on https://github.com/Ahtenus/minecraft-init
-
+# Updates on https://github.com/BrnoPCmaniak/WoW-init.d-script
 
 # Loads config file
 
 if [ -L $0 ]
 then
-	source `readlink -e $0 | sed "s:[^/]*$:config:"`
+        source `readlink -e $0 | sed "s:[^/]*$:config:"`
 else
-	source `echo $0 | sed "s:[^/]*$:config:"`
+        source `echo $0 | sed "s:[^/]*$:config:"`
 fi
 
 if [ "$SALT" == "" ]
 then
-	echo "Couldn't load config file, please edit config.example and rename it to config"
-	logger -t wow-init-config "Couldn't load config file, please edit config.example and rename it to config"
-	exit
+        echo "Couldn't load config file, please edit config.example and rename it to config"
+        logger -t wow-init-config "Couldn't load config file, please edit config.example and rename it to config"
+        exit
 fi
 
 
 ME=`whoami`
 as_user() {
-	if [ $ME == $USERNAME ] ; then
-		bash -c "$1"
-	else
-		su $USERNAME -s /bin/bash -c "$1"
-	fi
+        if [ $ME == $USERNAME ] ; then
+                bash -c "$1"
+        else
+                su $USERNAME -s /bin/bash -c "$1"
+        fi
 }
 is_running_worldserver(){
-	# Checks for the world server screen session
-	# returns true if it exists.
-	if ps ax | grep -v grep | grep "$WORLDSCREEN $WORLDINVOCATION" > /dev/null
-	then
-		return 0
-	fi
-	return 1
+        # Checks for the world server screen session
+        # returns true if it exists.
+        pidof $WORLDSERVER > /dev/null && return 0
+        pidof $WORLDSERVER > /dev/null || return 1
 }
 is_running_authserver(){
-	# Checks for the auth server screen session
-	# returns true if it exists.
-	if ps ax | grep -v grep | grep "$AUTHSCREEN $AUTHINVOCATION" > /dev/null
-	then
-		return 0
-	fi
-	return 1
+        # Checks for the auth server screen session
+        # returns true if it exists.
+        pidof $AUTHSERVER > /dev/null && return 0
+        pidof $AUTHSERVER > /dev/null || return 1
 }
 datepath() {
-	# datepath path filending-to-check returned-filending
+        # datepath path filending-to-check returned-filending
 
-	# Returns an file path with added date between the filename and file ending.
-	# $1 filepath (not including file ending)
-	# $2 file ending to check for uniqueness
-	# $3 file ending to return
+        # Returns an file path with added date between the filename and file ending.
+        # $1 filepath (not including file ending)
+        # $2 file ending to check for uniqueness
+        # $3 file ending to return
 
-	if [ -e $1`date +%F`$2 ]
-	then
-		echo $1`date +%FT%T`$3
-	else
-		echo $1`date +%F`$3
-	fi
+        if [ -e $1`date +%F`$2 ]
+        then
+                echo $1`date +%FT%T`$3
+        else
+                echo $1`date +%F`$3
+        fi
 }
 world_start() {
+<<<<<<< HEAD
 	cd $WOWPATH
 	as_user "cd $WOWPATH && screen -dmS $WORLDSCREEN $WORLDINVOCATION"
 	#
@@ -169,6 +166,101 @@ world_stop() {
 		fi
 	done	
 	echo -e "Worldserver is now shut down.  [  \033[0;32mOK\033[0m  ]"
+=======
+        cd $WOWPATH
+        as_user "cd $WOWPATH && screen -dmS $WORLDSCREEN $WORLDINVOCATION"
+        #
+        # Waiting for the server to start
+        #
+        seconds=5
+        until ps ax | grep -v grep | grep "$WORLDSCREEN $WORLDINVOCATION" > /dev/null
+        do
+                sleep 1
+                seconds=$seconds+1
+                if [[ $seconds -eq 5 ]]
+                then
+                        echo "Still not running, waiting a while longer..."
+                fi
+                if [[ $seconds -ge 120 ]]
+                then
+                        echo -e "Worldserver Failed to start, aborting.    [ \033[0;31mFAIL\033[0m ]"
+                        exit 1
+                fi
+        done
+        echo -e "Worldserver is running.                 [  \033[0;32mOK\033[0m  ]"
+}
+auth_start() {
+        cd $WOWPATH
+        as_user "cd $WOWPATH && screen -dmS $AUTHSCREEN $AUTHINVOCATION"
+        #
+        # Waiting for the server to start
+        #
+        seconds=5
+        until ps ax | grep -v grep | grep "$AUTHSCREEN $AUTHINVOCATION" > /dev/null
+        do
+                sleep 1
+                seconds=$seconds+1
+                if [[ $seconds -eq 5 ]]
+                then
+                        echo "Still not running, waiting a while longer..."
+                fi
+                if [[ $seconds -ge 120 ]]
+                then
+                        echo -e "Authserver failed to start, aborting.     [ \033[0;31mFAIL\033[0m ]"
+                        exit 1
+                fi
+        done
+        echo -e "Authserver is running.                 [  \033[0;32mOK\033[0m  ]"
+}
+auth_stop() {
+        as_user "screen -p 0 -S $AUTHSCREEN -X eval 'stuff \"^C\"\015'"
+        sleep 0.5
+        #
+        # Waiting for the server to shut down
+        #
+        seconds=0
+        while ps ax | grep -v grep | grep "$AUTHSCREEN $AUTHINVOCATION" > /dev/null
+        do
+                sleep 1
+                seconds=$seconds+1
+                if [[ $seconds -eq 5 ]]
+                then
+                        echo "Still not shut down, waiting a while longer..."
+                fi
+                if [[ $seconds -ge 120 ]]
+                then
+                        logger -t wow-init-auth "Failed to shut down server, aborting."
+                        echo -e "Authserver failed to start, aborting.     [ \033[0;31mFAIL\033[0m ]"
+                        exit 1
+                fi
+        done
+        echo -e "Authserver is now shut down.   [  \033[0;32mOK\033[0m  ]"
+}
+world_stop() {
+        as_user "screen -p 0 -S $WORLDSCREEN -X eval 'stuff \"server shutdown 60\"\015'"
+        echo -e "Worldserver is shuting down in 60s.   [  \033[0;32mOK\033[0m  ]"
+        sleep 60
+        #
+        # Waiting for the server to shut down
+        #
+        seconds=0
+        while ps ax | grep -v grep | grep "$WORLDSCREEN $WORLDINVOCATION" > /dev/null
+        do
+                sleep 1
+                seconds=$seconds+1
+                if [[ $seconds -eq 5 ]]
+                then
+                        echo "Still not shut down, waiting a while longer..."
+                fi
+                if [[ $seconds -ge 120 ]]
+                then
+                        logger -t wow-init-world "Failed to shut down server, aborting."
+                        echo -e "Worldserver failed to start, aborting.    [ \033[0;31mFAIL\033[0m  ]"
+                        exit 1
+                fi
+        done
+        echo -e "Worldserver is now shut down.  [  \033[0;32mOK\033[0m  ]"
+>>>>>>> Repair function : is_running_worldserver() and is_running_authserver()
 }
 log_roll() {
         if [ ! -d $OLDLOGPATH ]; then
@@ -176,12 +268,12 @@ log_roll() {
         fi
         path=`datepath $OLDLOGPATH/server_ .log.gz .log`
         as_user "cp $LOGPATH/*.* $path && gzip $path"
-	# only if previous command was successful
+        # only if previous command was successful
         if [ $? -eq 0 ]; then
                 # turnacate the existing log without restarting server
                 as_user "cp /dev/null $LOGPATH/$AUTHLOGFILE"
                 as_user "cp /dev/null $LOGPATH/$AUTHSQLDRIVERLOGFILE"
-                as_user "cp /dev/null $LOGPATH/$SERVERLOGFILE"                
+                as_user "cp /dev/null $LOGPATH/$SERVERLOGFILE"
                 as_user "cp /dev/null $LOGPATH/$WORLDLOGFILE"
                 as_user "cp /dev/null $LOGPATH/$DBERRORLOGFILE"
                 as_user "cp /dev/null $LOGPATH/$CHARLOGFILE"
@@ -203,16 +295,22 @@ log_roll() {
                 as_user "echo \"Previous logs rolled to $path\" > $LOGPATH/$SQLDEVELOPERLOFFILE "
                 as_user "echo \"Previous logs rolled to $path\" > $LOGPATH/$SQLDRIVERLOGFILE "
                 as_user "echo \"Previous logs rolled to $path\" > $LOGPATH/$CHATLOGFILE "
+<<<<<<< HEAD
                 echo -e "Logs are roled.                [  \033[0;32mOK\033[0m  ]"              
         else    
+=======
+                echo -e "Logs are roled.                [  \033[0;32mOK\033[0m  ]"
+        else
+>>>>>>> Repair function : is_running_worldserver() and is_running_authserver()
                 echo -e "Failed to rotate logs to $OLDLOGPATH/server_$path.log.gz    [ \033[0;31mFAIL\033[0m ]"
         fi
 
 }
 case "$1" in
-	start)
-		# Starts the server
+        start)
+                # Starts the server
     if is_running_authserver; then
+<<<<<<< HEAD
 			echo -e "Authserver already running.              [ \033[0;31mFAIL\033[0m ]"
 		else
 			auth_start
@@ -304,6 +402,99 @@ case "$1" in
 		echo "Usage: wow {start|stop|restart|status|version|log-roll|announce|help}"
 		exit 1
 		;;
+=======
+                        echo -e "Authserver already running.              [ \033[0;31mFAIL\033[0m ]"
+                else
+                        auth_start
+                fi
+                if is_running_worldserver; then
+                        echo -e "Worldserver already running.             [ \033[0;31mFAIL\033[0m ]"
+                else
+                        world_start
+                fi
+                ;;
+        stop)
+                # Stops the server
+                if is_running_authserver; then
+                        as_user "screen -p 0 -S $WORLDSCREEN -X eval 'stuff \"announce SERVER IS GOING TO SHUT DOWN\"\015'"
+                        auth_stop
+                else
+                        echo -e "Auth server is not running.              [ \033[0;31mFAIL\033[0m ]"
+                fi
+                if is_running_worldserver; then
+                        world_stop
+                else
+                        echo -e "World server is not running.             [ \033[0;31mFAIL\033[0m ]"
+                fi
+                ;;
+        restart)
+                # Restarts the server
+                if is_running_authserver; then
+                        as_user "screen -p 0 -S $WORLDSCREEN -X eval 'stuff \"announce SERVER REBOOT IN 10 SECONDS!\"\015'"
+                        auth_stop
+                else
+                        echo -e "Auth server is not running.              [ \033[0;31mFAIL\033[0m ]"
+                fi
+                if is_running_worldserver; then
+                        world_stop
+                else
+                        echo -e "World server is not running.             [ \033[0;31mFAIL\033[0m ]"
+                fi
+                world_start
+                sleep 60
+                auth_start
+                ;;
+        announce)
+                # Says something to the ingame chat
+                if is_running_worldserver; then
+                        as_user "screen -p 0 -S $WORLDSCREEN -X eval 'stuff \"announce $2\"\015'"
+                else
+                        echo -e "World server is not running to announce.  [ \033[0;31mFAIL\033[0m ]"
+                fi
+                ;;
+        log-roll)
+                # Moves and Gzips the logfile
+                log_roll
+                ;;
+        status)
+                # Shows server status
+                if is_running_worldserver
+                then
+                        echo -e "World server is running.                  [  \033[0;32mON\033[0m  ]"
+                else
+                        echo -e "World server is not running.              [  \033[0;31mOFF\033[0m ]"
+                fi
+                if is_running_authserver
+                then
+                        echo -e "Auth server is running.                   [  \033[0;32mON\033[0m  ]"
+                else
+                        echo -e "Auth server is not running.               [  \033[0;31mOFF\033[0m ]"
+                fi
+                ;;
+        version)
+                if is_running_worldserver; then
+                        tac $LOGPATH/server.log | grep -m 1 "This server is running"
+                else
+                        echo "The server needs to be running to check version."
+                fi
+                ;;
+        help|--help|-h)
+                echo "Usage: $0 COMMAND"
+                echo
+                echo "Available commands:"
+                echo -e "   start \t\t Starts the server"
+                echo -e "   stop \t\t Stops the server"
+                echo -e "   restart \t\t Restarts the server"
+                echo -e "   log-roll \t\t Moves and gzips the logfile"
+                echo -e "   announce \t\t\t Prints the given string to the ingame chat."
+                echo -e "   status \t\t Displays server status"
+                echo -e "   version \t\t Displays Trinity Core version and then exits"
+                ;;
+        *)
+                echo "Usage: wow {start|stop|restart|status|version|log-roll|announce|help}"
+                exit 1
+                ;;
+>>>>>>> Repair function : is_running_worldserver() and is_running_authserver()
 esac
 
 exit 0
