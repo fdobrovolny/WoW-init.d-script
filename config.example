@@ -4,14 +4,16 @@
 # ================================           #
 ##############################################
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!#
-#!! Make a copy of this file named config  !!#
-#!! and edit the variables to your needs.  !!#
-#!! In worldserver.conf set this vaules!!! !!#
+#!! Make a copy of this file called config !!#
+#!! and edit the variables to setup init.d.!!#
+#!!----------------------------------------!!#
+#!! For logroling folow these steps:       !!#
+#!! In worldserver.conf set this vaules    !!#
 #!! LogTimestamp = 0                       !!#
 #!! GmLogPerAccount = 0                    !!#
 #!! GmLogTimestamp = 0                     !!#
 #!! ChatLogTimestamp = 0                   !!#
-#!! In authserver.conf set this vaules!!!  !!#
+#!! In authserver.conf set this vaules     !!#
 #!! LogTimestamp = 0                       !!#
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!#
 ##############################################
