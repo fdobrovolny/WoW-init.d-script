@@ -73,7 +73,6 @@ datepath() {
         fi
 }
 world_start() {
-<<<<<<< HEAD
 	cd $WOWPATH
 	as_user "cd $WOWPATH && screen -dmS $WORLDSCREEN $WORLDINVOCATION"
 	#
@@ -166,7 +165,6 @@ world_stop() {
 		fi
 	done	
 	echo -e "Worldserver is now shut down.  [  \033[0;32mOK\033[0m  ]"
-=======
         cd $WOWPATH
         as_user "cd $WOWPATH && screen -dmS $WORLDSCREEN $WORLDINVOCATION"
         #
@@ -260,7 +258,6 @@ world_stop() {
                 fi
         done
         echo -e "Worldserver is now shut down.  [  \033[0;32mOK\033[0m  ]"
->>>>>>> Repair function : is_running_worldserver() and is_running_authserver()
 }
 log_roll() {
         if [ ! -d $OLDLOGPATH ]; then
@@ -295,13 +292,10 @@ log_roll() {
                 as_user "echo \"Previous logs rolled to $path\" > $LOGPATH/$SQLDEVELOPERLOFFILE "
                 as_user "echo \"Previous logs rolled to $path\" > $LOGPATH/$SQLDRIVERLOGFILE "
                 as_user "echo \"Previous logs rolled to $path\" > $LOGPATH/$CHATLOGFILE "
-<<<<<<< HEAD
                 echo -e "Logs are roled.                [  \033[0;32mOK\033[0m  ]"              
         else    
-=======
                 echo -e "Logs are roled.                [  \033[0;32mOK\033[0m  ]"
         else
->>>>>>> Repair function : is_running_worldserver() and is_running_authserver()
                 echo -e "Failed to rotate logs to $OLDLOGPATH/server_$path.log.gz    [ \033[0;31mFAIL\033[0m ]"
         fi
 
@@ -309,8 +303,7 @@ log_roll() {
 case "$1" in
         start)
                 # Starts the server
-    if is_running_authserver; then
-<<<<<<< HEAD
+                if is_running_authserver; then
 			echo -e "Authserver already running.              [ \033[0;31mFAIL\033[0m ]"
 		else
 			auth_start
@@ -374,35 +367,6 @@ case "$1" in
 		fi
     		if is_running_worldserver
 		then
-			echo -e "Auth server is running.                   [  \033[0;32mON\033[0m  ]"
-		else
-			echo -e "Auth server is not running.               [  \033[0;31mOFF\033[0m ]"
-		fi
-		;;
-	version)
-		if is_running; then
-			tac $LOGPATH/server.log | grep -m 1 "This server is running"
-		else
-			echo "The server needs to be running to check version."
-		fi
-		;;
-	help|--help|-h)
-		echo "Usage: $0 COMMAND"
-		echo 
-		echo "Available commands:"
-		echo -e "   start \t\t Starts the server"
-		echo -e "   stop \t\t Stops the server"
-		echo -e "   restart \t\t Restarts the server"
-		echo -e "   log-roll \t\t Moves and gzips the logfile"
-		echo -e "   announce \t\t\t Prints the given string to the ingame chat."
-		echo -e "   status \t\t Displays server status"
-		echo -e "   version \t\t Displays Trinity Core version and then exits"
-		;;
-	*)
-		echo "Usage: wow {start|stop|restart|status|version|log-roll|announce|help}"
-		exit 1
-		;;
-=======
                         echo -e "Authserver already running.              [ \033[0;31mFAIL\033[0m ]"
                 else
                         auth_start
@@ -494,7 +458,6 @@ case "$1" in
                 echo "Usage: wow {start|stop|restart|status|version|log-roll|announce|help}"
                 exit 1
                 ;;
->>>>>>> Repair function : is_running_worldserver() and is_running_authserver()
 esac
 
 exit 0
