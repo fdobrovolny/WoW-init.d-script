@@ -294,8 +294,6 @@ log_roll() {
                 as_user "echo \"Previous logs rolled to $path\" > $LOGPATH/$CHATLOGFILE "
                 echo -e "Logs are roled.                [  \033[0;32mOK\033[0m  ]"              
         else    
-                echo -e "Logs are roled.                [  \033[0;32mOK\033[0m  ]"
-        else
                 echo -e "Failed to rotate logs to $OLDLOGPATH/server_$path.log.gz    [ \033[0;31mFAIL\033[0m ]"
         fi
 
