@@ -117,7 +117,7 @@ auth_start() {
 	echo "Authserver is running.                             \033[0;32m[  OK  ]"
 }
 auth_stop() {
-	as_user "screen -p 0 -S $AUTHSCREEN -X eval 'stuff \"^C\"\015'""
+	as_user "screen -p 0 -S $AUTHSCREEN -X eval 'stuff \"^C\"\015'"
 	sleep 0.5
 	#
 	# Waiting for the server to shut down
