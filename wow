@@ -40,22 +40,14 @@ as_user() {
 is_running_worldserver(){
 	# Checks for the world server screen session
 	# returns true if it exists.
-	if ps ax | grep -v grep | grep "$WORLDSCREEN $WORLDINVOCATION" > /dev/null
-	then
-  		return 0
-	else
-		return 1
-	fi
+	pidof $WORLDSERVER > /dev/null && return 0
+	pidof $WORLDSERVER > /dev/null || return 1
 }
 is_running_authserver(){
 	# Checks for the auth server screen session
 	# returns true if it exists.
-	if ps ax | grep -v grep | grep "$AUTHSCREEN $AUTHINVOCATION" > /dev/null
-	then
-  		return 0
-	else
-		return 1
-	fi
+	pidof $AUTHSERVER > /dev/null && return 0
+	pidof $AUTHSERVER > /dev/null || return 1
 }
 datepath() {
 	# datepath path filending-to-check returned-filending
