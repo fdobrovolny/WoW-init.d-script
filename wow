@@ -79,11 +79,11 @@ world_start() {
   		fi
 		if [[ $seconds -ge 120 ]]
 		then
-			echo "Worldserver Failed to start, aborting. \033[0;31m[ FAIL ]"
+			echo -e "Worldserver Failed to start, aborting. \033[0;31m[ FAIL ]"
 			exit 1
 		fi
 	done
-	echo "Worldserver is running.                            \033[0;32m[  OK  ]"
+	echo -e "Worldserver is running.                            \033[0;32m[  OK  ]"
 }
 auth_start() {
 	cd $WOWPATH
@@ -102,11 +102,11 @@ auth_start() {
 		fi
 		if [[ $seconds -ge 120 ]]
 		then
-			echo "Authserver failed to start, aborting.   \033[0;31m[ FAIL ]"
+			echo -e "Authserver failed to start, aborting.   \033[0;31m[ FAIL ]"
 			exit 1
 		fi
 	done
-	echo "Authserver is running.                             \033[0;32m[  OK  ]"
+	echo -e "Authserver is running.                             \033[0;32m[  OK  ]"
 }
 auth_stop() {
 	as_user "screen -p 0 -S $AUTHSCREEN -X eval 'stuff \"^C\"\015'"
@@ -126,11 +126,11 @@ auth_stop() {
 		if [[ $seconds -ge 120 ]]
 		then
 			logger -t wow-init-auth "Failed to shut down server, aborting."
-			echo "Authserver failed to start, aborting.   \033[0;31m[ FAIL ]"
+			echo -e "Authserver failed to start, aborting.   \033[0;31m[ FAIL ]"
 			exit 1
 		fi
 	done
-	echo "Authserver is now shut down.   \033[0;32m[  OK  ]"
+	echo -e "Authserver is now shut down.   \033[0;32m[  OK  ]"
 }
 world_stop() {
 	as_user "screen -p 0 -S $WORLDSCREEN -X eval 'stuff \"^C\"\015'"
@@ -145,16 +145,16 @@ world_stop() {
 		seconds=$seconds+1
 		if [[ $seconds -eq 5 ]]
 		then
-			echo "Still not shut down, waiting a while longer..."
+			echo -e "Still not shut down, waiting a while longer..."
 		fi
 		if [[ $seconds -ge 120 ]]
 		then
 			logger -t wow-init-world "Failed to shut down server, aborting."
-			echo "Worldserver failed to start, aborting. \033[0;31m[ FAIL ]"
+			echo -e "Worldserver failed to start, aborting. \033[0;31m[ FAIL ]"
 			exit 1
 		fi
 	done
-	echo "Worldserver is now shut down.  \033[0;32m[  OK  ]"
+	echo -e "Worldserver is now shut down.  \033[0;32m[  OK  ]"
 }
 log_roll() {
 	if [ ! -d $OLDLOGPATH ]; then
@@ -189,21 +189,21 @@ log_roll() {
 		as_user "echo \"Previous logs rolled to $path\" > $LOGPATH/$SQLDEVELOPERLOFFILE "
 		as_user "echo \"Previous logs rolled to $path\" > $LOGPATH/$SQLDRIVERLOGFILE "
 		as_user "echo \"Previous logs rolled to $path\" > $LOGPATH/$CHATLOGFILE "
-		echo "Logs are roled.                           \033[0;32m[  OK  ]"                     
+		echo -e "Logs are roled.                           \033[0;32m[  OK  ]"                     
 	else  
-		echo "Failed to rotate logs to $OLDLOGPATH/server_$path.log.gz  \033[0;31m[ FAIL ]"
+		echo -e "Failed to rotate logs to $OLDLOGPATH/server_$path.log.gz  \033[0;31m[ FAIL ]"
 	fi
 }
 case "$1" in
 start)
 	# Starts the server
 	if is_running_authserver; then
-		echo "Authserver already running.                      \033[0;31m[ FAIL ]"
+		echo -e "Authserver already running.                      \033[0;31m[ FAIL ]"
 	else
 		auth_start
 	fi
 	if is_running_worldserver; then
-		echo "Worldserver already running.                    \033[0;31m[ FAIL ]"
+		echo -e "Worldserver already running.                    \033[0;31m[ FAIL ]"
 	else
 		world_start
 	fi
@@ -214,12 +214,12 @@ stop)
 		as_user "screen -p 0 -S $WORLDSCREEN -X eval 'stuff \"announce SERVER IS GOING TO SHUT DOWN\"\015'"
 		auth_stop
 	else
-		echo "Auth server is not running.                      \033[0;31m[ FAIL ]"
+		echo -e "Auth server is not running.                      \033[0;31m[ FAIL ]"
 	fi  
 	if is_running_world; then
 		world_stop
 	else
-		echo "World server is not running.                    \033[0;31m[ FAIL ]"
+		echo -e "World server is not running.                    \033[0;31m[ FAIL ]"
 	fi
 	;;
 restart)
@@ -228,12 +228,12 @@ restart)
 		as_user "screen -p 0 -S $WORLDSCREEN -X eval 'stuff \"announce SERVER REBOOT IN 10 SECONDS!\"\015'"
 		auth_stop
 	else
-		echo "Auth server is not running.                      \033[0;31m[ FAIL ]"
+		echo -e "Auth server is not running.                      \033[0;31m[ FAIL ]"
 	fi
 	if is_running_worldserver; then
 		world_stop
 	else
-		echo "World server is not running.                    \033[0;31m[ FAIL ]"
+		echo -e "World server is not running.                    \033[0;31m[ FAIL ]"
 	fi  
 	world_start
 	sleep 60
@@ -244,7 +244,7 @@ announce)
 	if is_running_worldserver; then
 		as_user "screen -p 0 -S $WORLDSCREEN -X eval 'stuff \"announce $2\"\015'"
 	else
-		echo "World server is not running to announce.  \033[0;31m[ FAIL ]"
+		echo -e "World server is not running to announce.  \033[0;31m[ FAIL ]"
 	fi
 	;;
 log-roll)
@@ -255,22 +255,22 @@ status)
 	# Shows server status
 	if is_running_worldserver
 	then
-		echo "World server is running.                                 \033[0;32m[  ON  ]"
+		echo -e "World server is running.                                 \033[0;32m[  ON  ]"
 	else
-		echo "World server is not running.                     \033[0;31m[  OFF ]"
+		echo -e "World server is not running.                     \033[0;31m[  OFF ]"
 	fi
 	if is_running_worldserver
 	then
-		echo "Auth server is running.                                   \033[0;32m[  ON  ]"
+		echo -e "Auth server is running.                                   \033[0;32m[  ON  ]"
 	else
-		echo "Auth server is not running.                       \033[0;31m[  OFF ]"
+		echo -e "Auth server is not running.                       \033[0;31m[  OFF ]"
 	fi
 	;;
 version)
 	if is_running; then
 	tac $LOGPATH/server.log | grep -m 1 "This server is running"
 	else
-	echo "The server needs to be running to check version."
+	echo -e "The server needs to be running to check version.  \033[0;31m[ FAIL ]"
 	fi
 	;;
 help|--help|-h)
